@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-container">
-    <h2>Available Soccer Matches</h2>
+    <h2>Available Soccer Games</h2>
 
     <!-- Loading state -->
     <div v-if="isLoading" class="loading">Loading matches...</div>
@@ -22,18 +22,42 @@
           <p>Location: {{ match.place }}</p>
           <p>Available Spots: {{ match.availableSpots }}</p>
           
-          <!-- Join or Leave button -->
-          <div v-if="isUserSubscribed(match)">
-            <button @click="removeFromMatch(match._id)" class="leave-btn">
-              Leave Match
-            </button>
+          <!-- button -->
+          <div class="display-flex">
+              <!-- Join or Leave button -->
+              <div v-if="isUserSubscribed(match)" class="w-10">
+                <button @click="removeFromMatch(match._id)" class="leave-btn">
+                  Leave Game
+                </button>
+              </div>
+              <div v-else class="w-10">
+                <button @click="joinMatch(match._id)" class="join-btn">
+                  Join Game
+                </button>
+              </div>
+              <!-- View Registered Users Button -->
+              <div class="w-10 ml-1">
+                <button @click="viewRegisteredUsers(match._id)" class="view-registered-btn">
+                  Joining List
+                </button>
+              </div>
           </div>
-          <div v-else>
-            <button @click="joinMatch(match._id)" class="join-btn">
-              Join Match
-            </button>
-          </div>
+
         </div>
+      </div>
+    </div>
+
+    <!-- Registered Users Modal -->
+    <div v-if="showUsersModal" class="modal" @click.self="closeModal">
+      <div class="modal-content">
+        <!-- Close button -->
+        <span @click="closeModal" class="close-btn">&times;</span>
+        <h3>Registered Users</h3>
+        <ul>
+          <li v-for="user in registeredUsers" :key="user._id">
+            {{ user.username }} - {{ user.email }}
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -48,6 +72,8 @@ export default {
       matches: [],
       errorMessage: "",
       isLoading: false,
+      showUsersModal: false, // Controls modal visibility
+      registeredUsers: [], // Stores list of registered users
     };
   },
   methods: {
@@ -76,6 +102,12 @@ export default {
           availableSpots: match.maxPeople - match.listPeopleSubscribed.length,
         }));
       } catch (error) {
+        // Check for 401 Unauthorized error
+        if (error.response && error.response.status === 401) {
+          // Clear local storage and redirect to login
+          localStorage.removeItem("jwt_token");
+          this.$router.push("/login"); // Redirect to login page
+        }
         this.errorMessage = error.response
           ? error.response.data.message
           : "An error occurred while fetching the matches.";
@@ -93,7 +125,6 @@ export default {
     // Join a match
     async joinMatch(matchId) {
       const token = localStorage.getItem("jwt_token");
-      // const userId = localStorage.getItem("user_id");
 
       if (!token) {
         this.$router.push("/login");
@@ -103,7 +134,7 @@ export default {
       try {
         await axios.post(
           `http://localhost:3000/api/v1/match/register/${matchId}`,
-          {  },
+          {},
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -144,6 +175,38 @@ export default {
           ? error.response.data.message
           : "An error occurred while leaving the match.";
       }
+    },
+
+    // View registered users for a match
+    async viewRegisteredUsers(matchId) {
+      const token = localStorage.getItem("jwt_token");
+
+      if (!token) {
+        this.$router.push("/login");
+        return;
+      }
+
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/api/v1/match/registered/${matchId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        this.registeredUsers = response.data.users;
+        this.showUsersModal = true; // Show the modal with the registered users
+      } catch (error) {
+        this.errorMessage = error.response
+          ? error.response.data.message
+          : "An error occurred while fetching the registered users.";
+      }
+    },
+
+    // Close the modal
+    closeModal() {
+      this.showUsersModal = false;
     },
   },
   mounted() {
@@ -209,13 +272,66 @@ export default {
   background-color: #d32f2f;
 }
 
-.error-message {
-  color: red;
-  font-size: 16px;
+.view-registered-btn {
+  padding: 10px 20px;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
-.loading {
-  font-size: 18px;
-  margin-top: 20px;
+.view-registered-btn:hover {
+  background-color: #1976d2;
+}
+
+/* Modal Styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  text-align: left;
+  position: relative; /* Needed for positioning the close button */
+}
+
+.close-btn {
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #555;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+.close-btn:hover {
+  color: red;
+}
+
+.display-flex {
+  display: flex;
+  justify-content: center;
+}
+
+.w-10 {
+  width: 10rem;
+}
+
+.ml-1 {
+  margin-left: 0.2rem;
 }
 </style>

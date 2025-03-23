@@ -53,7 +53,7 @@
   
         <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
   
-        <button type="submit" class="submit-btn" :disabled="isLoading">Create Match</button>
+        <button type="submit" class="submit-btn" :disabled="isLoading">Create Game</button>
       </form>
     </div>
   </template>

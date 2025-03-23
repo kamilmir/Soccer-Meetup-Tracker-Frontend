@@ -62,6 +62,7 @@ export default {
 
         // On successful login, store the JWT token in localStorage
         localStorage.setItem("jwt_token", response.data.jwt_token);
+        localStorage.setItem("user_id", response.data.user_id);
 
         // Redirect user to the home page or dashboard after successful login
         this.$router.push("/dashboard"); // If using vue-router

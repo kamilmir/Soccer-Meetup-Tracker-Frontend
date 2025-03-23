@@ -2,7 +2,7 @@
   <div id="app">
     <nav>
       <router-link to="/">Home</router-link>
-      <router-link to="/create-match">Create Match</router-link>
+      <router-link to="/create-match">Create Game</router-link>
       <router-link to="/login">Login</router-link>
     </nav>
     <router-view/>
