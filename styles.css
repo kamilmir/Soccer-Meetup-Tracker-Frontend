@@ -1,0 +1,139 @@
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+/* Color Palette */
+:root {
+  --primary: #ff7f50; /* Coral */
+  --secondary: #3a86ff; /* Vibrant Blue */
+  --accent: #ffbe0b; /* Bright Yellow */
+  --bg-light: #f3f4f6;
+  --bg-dark: #121212;
+  --text-light: #333;
+  --text-dark: #f9f9f9;
+  --card-bg-light: rgba(255, 255, 255, 0.8);
+  --card-bg-dark: rgba(40, 40, 40, 0.9);
+  --border-radius: 14px;
+  --transition: 0.4s ease;
+}
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg-light);
+  color: var(--text-light);
+  transition: background var(--transition), color var(--transition);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  text-align: center;
+}
+
+/* Dark Mode */
+[data-theme="dark"] {
+  background: var(--bg-dark);
+  color: var(--text-dark);
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+}
+
+/* Glassmorphic App Container */
+#app {
+  width: 90%;
+  max-width: 700px;
+  padding: 2rem;
+  background: var(--card-bg-light);
+  border-radius: var(--border-radius);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(10px);
+  transition: background var(--transition);
+}
+
+[data-theme="dark"] #app {
+  background: var(--card-bg-dark);
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+}
+
+/* Typography */
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+p {
+  font-size: 1rem;
+  color: var(--secondary);
+}
+
+/* Forms */
+input, button {
+  font-family: inherit;
+  padding: 0.8rem;
+  margin: 0.6rem 0;
+  border-radius: var(--border-radius);
+  border: 2px solid transparent;
+  width: 100%;
+  box-sizing: border-box;
+  transition: all var(--transition);
+}
+
+/* Input Fields */
+input {
+  background: rgba(255, 255, 255, 0.6);
+  border: 2px solid #ddd;
+  font-size: 1rem;
+}
+
+input:focus {
+  border-color: var(--primary);
+  outline: none;
+}
+
+/* Buttons */
+button {
+  background: var(--primary);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: transform 0.2s ease, background 0.3s;
+}
+
+button:hover {
+  background: var(--accent);
+  transform: scale(1.05);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  #app {
+    width: 95%;
+    padding: 1.5rem;
+  }
+
+  .theme-toggle {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+}
